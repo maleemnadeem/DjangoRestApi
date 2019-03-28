@@ -22,3 +22,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+
+class AddNewRecipeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.AddNewRecipe
+        fields= ('id','title_text','description_text','direction_text','ingredients_text','created_on')
+        extra_kwargs = {'user_profile':{'read_only':True}}

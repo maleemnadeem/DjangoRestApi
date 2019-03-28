@@ -17,4 +17,4 @@ class PostOwnStatus(permissions.BasePermission):
 
             return True
 
-        return  obj.id == request.user.id
+        return  obj.user_profile.id == request.user.id

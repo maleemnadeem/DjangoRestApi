@@ -63,3 +63,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
         """Django uses this when it needs to convert the object to text."""
 
         return self.email
+
+class AddNewRecipe(models.Model):
+
+    user_profile = models.ForeignKey('UserProfile',on_delete=models.CASCADE)
+    title_text = models.CharField(max_length=255)
+    description_text = models.TextField()
+    direction_text = models.TextField()
+    ingredients_text = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+
+        return self.title_text

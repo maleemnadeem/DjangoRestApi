@@ -34,3 +34,12 @@ class LoginViewSet(viewsets.ViewSet):
     def create(self, request):
 
          return ObtainAuthToken().post(request)
+
+class AddNewRecipeViewSet(viewsets.ModelViewSet):
+    authentication_classes=(TokenAuthentication,)
+    serializer_class = serializers.AddNewRecipeSerializer
+    queryset = models.AddNewRecipe.objects.all()
+    permission_classes = (permissions.UpdateOwnRecipe,IsAuthenticated)
+
+    def perform_create(self,serializer):
+        serializer.save(user_profile = self.request.user)
