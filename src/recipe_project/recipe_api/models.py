@@ -76,3 +76,11 @@ class AddNewRecipe(models.Model):
     def __str__(self):
 
         return self.title_text
+
+class Follower(models.Model):
+    user_profile = models.ForeignKey('UserProfile',on_delete=models.CASCADE)
+    follower_email = models.EmailField(max_length=255)
+
+    def __str__(self):
+
+        return self.follower_email
