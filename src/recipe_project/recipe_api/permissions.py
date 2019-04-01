@@ -21,14 +21,11 @@ class UpdateOwnRecipe(permissions.BasePermission):
 
 
 
-class ViewOwnRecipe(permissions.BasePermission):
-
+class UpdateOwnFollower(permissions.BasePermission):
     def has_object_permission(self,request,view,obj):
 
         if request.method in permissions.SAFE_METHODS:
 
             return True
 
-        else:
-
-            return False
+        return  obj.user_profile.id == request.user.id
