@@ -38,8 +38,11 @@ class LoginViewSet(viewsets.ViewSet):
 class AddNewRecipeViewSet(viewsets.ModelViewSet):
     authentication_classes=(TokenAuthentication,)
     serializer_class = serializers.AddNewRecipeSerializer
-    queryset = models.AddNewRecipe.objects.all()
-    permission_classes = (permissions.UpdateOwnRecipe,IsAuthenticated)
+    permission_classes = (permissions.UpdateOwnRecipe,permissions.ViewOwnRecipe)
 
     def perform_create(self,serializer):
         serializer.save(user_profile = self.request.user)
+
+    def get_queryset(self):
+        recipes = models.AddNewRecipe.objects.all().filter(user_profile_id=self.request.user.id)
+        return recipes
