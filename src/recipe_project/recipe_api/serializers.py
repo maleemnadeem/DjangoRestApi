@@ -29,3 +29,9 @@ class AddNewRecipeSerializer(serializers.ModelSerializer):
         model = models.AddNewRecipe
         fields= ('id','title_text','description_text','direction_text','ingredients_text','created_on')
         extra_kwargs = {'user_profile':{'read_only':True}}
+
+
+class FollowerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Follower
+        fields = '__all__'
