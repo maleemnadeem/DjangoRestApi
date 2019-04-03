@@ -35,3 +35,8 @@ class FollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Follower
         fields = '__all__'
+
+class ViewFollowerRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Follower
+        fields = '__all__'
