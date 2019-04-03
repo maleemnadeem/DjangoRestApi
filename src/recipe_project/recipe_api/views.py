@@ -70,10 +70,13 @@ class ViewFollowerRecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         follower_recipe = models.Follower.objects.filter(user_profile_id = self.request.user.id).values_list('follower_email', flat=True)
+        #follower_recipe = models.Follower.objects.filter(user_profile_id = self.request.user.id)
         return follower_recipe
 
     def list(self,request):
         queryset = self.get_queryset()
-        followers_list = list(querysetf)
+        followers_list = list(queryset)
         recipies = models.AddNewRecipe.objects.filter(user_profile__email__in=followers_list)
-        serializer = self.get_ser
+        #recipies = models.AddNewRecipe.objects.all()
+        serializer = serializers.AddNewRecipeSerializer(recipies,many=True)
+        return Response(serializer.data)
