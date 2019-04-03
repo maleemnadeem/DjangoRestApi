@@ -52,10 +52,10 @@ class FollowerViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.FollowerSerializer
     permission_classes = (permissions.UpdateOwnFollower,)
 
-    def list(self,request):
-        queryset = models.Follower.objects.all()
-        serializer = serializers.FollowerSerializer(queryset, many=True)
-        return Response(serializer.data)
+    #def list(self,request):
+    #    queryset = models.Follower.objects.all()
+    #    serializer = serializers.FollowerSerializer(queryset, many=True)
+    #    return Response(serializer.data)
 
     def perform_create(self,serializer):
         serializer.save(user_profile = self.request.user)
@@ -63,3 +63,17 @@ class FollowerViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         follower = models.Follower.objects.all().filter(user_profile_id = self.request.user.id)
         return follower
+
+class ViewFollowerRecipeViewSet(viewsets.ModelViewSet):
+    authentication_classes=(TokenAuthentication,)
+    serializer_class=serializers.ViewFollowerRecipeSerializer
+
+    def get_queryset(self):
+        follower_recipe = models.Follower.objects.filter(user_profile_id = self.request.user.id).values_list('follower_email', flat=True)
+        return follower_recipe
+
+    def list(self,request):
+        queryset = self.get_queryset()
+        followers_list = list(querysetf)
+        recipies = models.AddNewRecipe.objects.filter(user_profile__email__in=followers_list)
+        serializer = self.get_ser
