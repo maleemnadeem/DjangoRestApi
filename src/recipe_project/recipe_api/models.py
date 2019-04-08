@@ -64,7 +64,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
         return self.email
 
-class AddNewRecipe(models.Model):
+class Recipe(models.Model):
 
     user_profile = models.ForeignKey('UserProfile',on_delete=models.CASCADE)
     title_text = models.CharField(max_length=255)

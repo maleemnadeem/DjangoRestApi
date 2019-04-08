@@ -37,14 +37,14 @@ class LoginViewSet(viewsets.ViewSet):
 
 class AddNewRecipeViewSet(viewsets.ModelViewSet):
     authentication_classes=(TokenAuthentication,)
-    serializer_class = serializers.AddNewRecipeSerializer
+    serializer_class = serializers.RecipeSerializer
     permission_classes = (permissions.UpdateOwnRecipe,)
 
     def perform_create(self,serializer):
         serializer.save(user_profile = self.request.user)
 
     def get_queryset(self):
-        recipes = models.AddNewRecipe.objects.all().filter(user_profile_id=self.request.user.id)
+        recipes = models.Recipe.objects.all().filter(user_profile_id=self.request.user.id)
         return recipes
 
 class FollowerViewSet(viewsets.ModelViewSet):
@@ -75,8 +75,8 @@ class ViewFollowerRecipeViewSet(viewsets.ModelViewSet):
 
     def list(self,request):
         queryset = self.get_queryset()
-        followers_list = list(queryset)
-        recipies = models.AddNewRecipe.objects.filter(user_profile__email__in=followers_list)
+        followers_emails = list(queryset)
+        recipies = models.Recipe.objects.filter(user_profile__email__in=followers_emails)
         #recipies = models.AddNewRecipe.objects.all()
-        serializer = serializers.AddNewRecipeSerializer(recipies,many=True)
+        serializer = serializers.RecipeSerializer(recipies,many=True)
         return Response(serializer.data)
