@@ -29,11 +29,17 @@ class UserProfileViewSet(viewsets.ModelViewSet):
 
 
 class LoginViewSet(viewsets.ViewSet):
-    serializer_class = AuthTokenSerializer
+    # serializer_class =serializers.LoginSerializer
 
     def create(self, request):
-
-         return ObtainAuthToken().post(request)
+         auth_token = ObtainAuthToken().post(request).data
+         result = models.UserProfile.objects.filter(email=self.request.data.get('username',None))[0]
+         data =serializers.LoginSerializer(result).data
+         print("auth token is: ",auth_token)
+         new_dict = auth_token
+         new_dict.update(data)
+         # data['token'] = auth_token
+         return Response(new_dict)
 
 class AddNewRecipeViewSet(viewsets.ModelViewSet):
     authentication_classes=(TokenAuthentication,)
@@ -51,11 +57,6 @@ class FollowerViewSet(viewsets.ModelViewSet):
     authentication_classes=(TokenAuthentication,)
     serializer_class = serializers.FollowerSerializer
     permission_classes = (permissions.UpdateOwnFollower,)
-
-    #def list(self,request):
-    #    queryset = models.Follower.objects.all()
-    #    serializer = serializers.FollowerSerializer(queryset, many=True)
-    #    return Response(serializer.data)
 
     def perform_create(self,serializer):
         serializer.save(user_profile = self.request.user)
