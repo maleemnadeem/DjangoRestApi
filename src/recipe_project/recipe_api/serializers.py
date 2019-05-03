@@ -40,3 +40,8 @@ class ViewFollowerRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Follower
         fields = '__all__'
+
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserProfile
+        fields = ( 'id','email', 'name')
