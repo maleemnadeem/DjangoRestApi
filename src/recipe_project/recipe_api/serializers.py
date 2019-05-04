@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from . import models
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
     """A serializer for our user profile objects."""
 
@@ -23,25 +24,34 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         return user
 
+
 class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Recipe
-        fields= ('id','title_text','description_text','direction_text','ingredients_text','created_on')
-        extra_kwargs = {'user_profile':{'read_only':True}}
+        fields = (
+            'id', 'title_text', 'description_text',
+            'direction_text', 'ingredients_text', 'created_on'
+        )
+        extra_kwargs = {'user_profile': {'read_only': True}}
 
 
 class FollowerSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Follower
         fields = '__all__'
+
 
 class ViewFollowerRecipeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Follower
         fields = '__all__'
 
+
 class LoginSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.UserProfile
-        fields = ( 'id','email', 'name')
+        fields = ('id', 'email', 'name')
