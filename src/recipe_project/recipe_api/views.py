@@ -62,12 +62,35 @@ class FollowerViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnFollower,)
 
     def perform_create(self, serializer):
-        serializer.save(user_profile=self.request.user)
+        if self.is_member(serializer):
+
+            if self.is_already_exist(serializer):
+                serializer.save(user_profile=self.request.user)
+            else:
+                print('already')
+        else:
+            print('not user')
 
     def get_queryset(self):
         follower = models.Follower.objects.all().filter(
         user_profile_id=self.request.user.id)
         return follower
+
+    def is_already_exist(self,serializer):
+        exist_followers = models.Follower.objects.filter(
+            user_profile_id=self.request.user.id).values_list(
+            'follower_email', flat=True)
+        if list(exist_followers).count(serializer.data['follower_email'])>0:
+            return False
+        else:
+            return True
+
+    def is_member(self,serializer):
+        members = models.UserProfile.objects.all().values_list('email',flat=True)
+        if list(members).count(serializer.data['follower_email'])>0:
+            return True
+        else:
+            return False
 
 
 class ViewFollowerRecipeViewSet(viewsets.ModelViewSet):
