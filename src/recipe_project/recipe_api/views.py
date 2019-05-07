@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from . import serializers
 from . import models
 from . import permissions
+from . import exceptions
 
 
 # Create your views here.
@@ -35,11 +36,9 @@ class LoginViewSet(viewsets.ViewSet):
         result = models.UserProfile.objects.filter(
         email=self.request.data.get('username', None))[0]
         data = serializers.LoginSerializer(result).data
-        print("auth token is: ", auth_token)
-        new_dict = auth_token
-        new_dict.update(data)
-        # data['token'] = auth_token
-        return Response(new_dict)
+        login_detail = auth_token
+        login_detail.update(data)
+        return Response(login_detail)
 
 
 class AddNewRecipeViewSet(viewsets.ModelViewSet):
@@ -67,9 +66,9 @@ class FollowerViewSet(viewsets.ModelViewSet):
             if self.is_already_exist(serializer):
                 serializer.save(user_profile=self.request.user)
             else:
-                print('already')
+                raise exceptions.DuplicateFollowerException
         else:
-            print('not user')
+            raise exceptions.NotMemberException
 
     def get_queryset(self):
         follower = models.Follower.objects.all().filter(
@@ -80,14 +79,14 @@ class FollowerViewSet(viewsets.ModelViewSet):
         exist_followers = models.Follower.objects.filter(
             user_profile_id=self.request.user.id).values_list(
             'follower_email', flat=True)
-        if list(exist_followers).count(serializer.data['follower_email'])>0:
+        if list(exist_followers).count(serializer.validated_data['follower_email'])>0:
             return False
         else:
             return True
 
     def is_member(self,serializer):
         members = models.UserProfile.objects.all().values_list('email',flat=True)
-        if list(members).count(serializer.data['follower_email'])>0:
+        if list(members).count(serializer.validated_data['follower_email'])>0:
             return True
         else:
             return False
